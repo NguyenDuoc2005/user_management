@@ -93,4 +93,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseBody
+    public ResponseEntity<ResponseObject<?>> handleForbiddenException(ForbiddenException ex) {
+        ResponseObject<String> response = new ResponseObject<>();
+        response.setSuccess(false);
+        response.setStatus(HttpStatus.FORBIDDEN);
+        response.setMessage(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
 }

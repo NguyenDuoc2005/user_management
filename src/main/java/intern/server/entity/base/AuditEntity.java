@@ -1,6 +1,6 @@
 package intern.server.entity.base;
 
-import intern.server.listener.AuditEntityListener;
+import intern.server.entity.listener.AuditEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

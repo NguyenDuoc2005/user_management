@@ -1,4 +1,4 @@
-package intern.server.listener;
+package intern.server.entity.listener;
 
 import intern.server.common.constant.EntityStatus;
 import intern.server.entity.base.PrimaryEntity;

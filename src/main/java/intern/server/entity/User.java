@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
 
 @Getter
@@ -20,7 +19,7 @@ public class User extends PrimaryEntity implements Serializable {
     private String name;
 
     @Size(max = EntityProperties.LENGTH_NAME)
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username",  nullable = false)
     private String userName;
 
     @Size(max = EntityProperties.LENGTH_PICTURE)
@@ -32,7 +31,7 @@ public class User extends PrimaryEntity implements Serializable {
     private String email;
 
     @Size(max = EntityProperties.LENGTH_NAME)
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone")
     private String phone;
 
     @Size(max = EntityProperties.LENGTH_PICTURE)

@@ -2,7 +2,7 @@ package intern.server.entity.base;
 
 import intern.server.common.constant.EntityProperties;
 import intern.server.common.constant.EntityStatus;
-import intern.server.listener.CreatePrimaryEntityListener;
+import intern.server.entity.listener.CreatePrimaryEntityListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
