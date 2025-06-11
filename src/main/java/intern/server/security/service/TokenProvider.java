@@ -87,7 +87,7 @@ public class TokenProvider {
         claims.put("userId", user.get().getId());
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.get().getId())
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
@@ -119,7 +119,7 @@ public class TokenProvider {
 
     public String getUserIdFromToken(String token) {
         Claims claims = getClaimsToken(token);
-        return claims.getSubject();
+        return claims.get("userId", String.class);
     }
 
     public String getEmailFromToken(String token) {

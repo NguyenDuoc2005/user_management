@@ -45,28 +45,24 @@ public class AuthServiceImpl implements AuthService {
 
     public ResponseObject<?> login(String email, String password) {
         try {
-            // Tạo đối tượng xác thực từ email và password
+
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(email, password);
 
-            // Xác thực người dùng qua AuthenticationManager
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-            // Lấy UserPrincipal từ Authentication
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-            // Tạo Access Token và Refresh Token
-            String accessToken = tokenProvider.createToken(authentication);  // Access Token
-            String refreshToken = tokenProvider.createRefreshToken(authentication);  // Refresh Token
+            String accessToken = tokenProvider.createToken(authentication);
+            String refreshToken = tokenProvider.createRefreshToken(authentication);
 
-            // Trả về cả Access Token và Refresh Token
             return new ResponseObject<>(new AuthTokens(accessToken, refreshToken), HttpStatus.OK, "Lấy token thành công");
 
         } catch (BadCredentialsException ex) {
-            // Nếu thông tin xác thực không đúng
+
             return new ResponseObject<>(null, HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không đúng");
         } catch (Exception ex) {
-            // Xử lý các lỗi khác
+
             return new ResponseObject<>(null, HttpStatus.INTERNAL_SERVER_ERROR, "Đã xảy ra lỗi: " + ex.getMessage());
         }
     }
@@ -101,6 +97,7 @@ public class AuthServiceImpl implements AuthService {
         userRole.setUser(newUser);
 
         return new ResponseObject<>(authUserRoleRepository.save(userRole), HttpStatus.OK,"Đăng ký thành công");
+
     }
 
     @Override

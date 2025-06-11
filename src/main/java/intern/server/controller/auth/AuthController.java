@@ -1,4 +1,4 @@
-package intern.server.controller;
+package intern.server.controller.auth;
 
 import intern.server.common.base.ResponseObject;
 import intern.server.common.constant.MappingConstants;
@@ -25,7 +25,7 @@ public class AuthController {
         return Helper.createResponseEntity(responseObject);
     }
 
-    @PutMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         return Helper.createResponseEntity(authService.register(request));
     }

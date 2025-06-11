@@ -1,7 +1,7 @@
 package intern.server.security.config;
 
 import intern.server.common.constant.MappingConstants;
-import intern.server.common.constant.Role;
+import intern.server.common.constant.Roles;
 import intern.server.common.exception.RestAuthenticationEntryPoint;
 import intern.server.security.filter.TokenAuthenticationFilter;
 import intern.server.utils.Helper;
@@ -108,8 +108,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(
                 auth -> auth
-                        .requestMatchers(Helper.appendWildcard(MappingConstants.API_ADMIN_PREFIX)).hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers(Helper.appendWildcard(MappingConstants.API_USER_PREFIX)).hasAnyAuthority(Role.USER.name())
+                        .requestMatchers(Helper.appendWildcard(MappingConstants.API_ADMIN_PREFIX)).hasAnyAuthority(Roles.ADMIN.name())
+                        .requestMatchers(Helper.appendWildcard(MappingConstants.API_USER_PREFIX)).hasAnyAuthority(Roles.USER.name())
         );
 
         http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
