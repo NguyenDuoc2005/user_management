@@ -38,3 +38,14 @@ bin/
 
 # MySQL Data Directory
 mysql-data/
+
+# Operating System files
+.DS_Store    # macOS system file
+Thumbs.db    # Windows system file
+
+# Log files
+*.log
+
+# Backup files
+*.bak
+*.swp

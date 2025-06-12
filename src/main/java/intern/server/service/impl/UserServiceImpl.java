@@ -49,10 +49,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseObject<?> createUser(CreateUpdateUserRequest request) {
+
         List<User> userOptional = maUserRepository.findAllByEmail(request.getEmail().trim());
         if (!userOptional.isEmpty()) {
             return new ResponseObject<>(null, HttpStatus.BAD_REQUEST, "Email đã tồn tại");
         }
+
+        List<User> phoneOptional = maUserRepository.findAllByEmail(request.getPhone().trim());
+        if (!phoneOptional.isEmpty()) {
+            return new ResponseObject<>(null, HttpStatus.BAD_REQUEST, "Số điện thoại đã tồn tại");
+        }
+
         User user = new User();
         user.setName(request.getName());
         user.setUserName(request.getUserName());
@@ -69,6 +76,7 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole(user, role.get());
         userRoleExtendsRepository.save(userRole);
         return new ResponseObject<>(userRole, HttpStatus.CREATED, "Thêm người dùng thành công");
+
     }
 
     @Override

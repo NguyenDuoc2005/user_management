@@ -42,45 +42,30 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
+
             String jwt = getJwtFromRequest(request);
 
-            if (!StringUtils.hasText(jwt)) {
-                sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Không có mã thông báo JWT nào được cung cấp trong tiêu đề Ủy quyền");
-                return;
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                String userId = tokenProvider.getUserIdFromToken(jwt);
+                String userEmail = tokenProvider.getEmailFromToken(jwt);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+//                List<Role> roleCode = tokenProvider.getRolesCodesFromToken(jwt);
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
             }
-
-            if (!tokenProvider.validateToken(jwt)) {
-                sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Mã thông báo JWT không hợp lệ hoặc đã hết hạn");
-                return;
-            }
-
-            String userId = tokenProvider.getUserIdFromToken(jwt);
-            String userEmail = tokenProvider.getEmailFromToken(jwt);
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
-
-            if (userDetails == null) {
-                sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Không tìm thấy người dùng cho mã thông báo được cung cấp");
-                return;
-            }
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            filterChain.doFilter(request, response);
-
-        } catch (UsernameNotFoundException ex) {
-            log.error("User not found", ex);
-            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Không tìm thấy người dùng cho mã thông báo được cung cấp");
         } catch (Exception ex) {
-            log.error("Không thể thiết lập xác thực người dùng trong ngữ cảnh bảo mật", ex);
-            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Xác thực không thành công: " + ex.getMessage());
+            log.error("Could not set user authentication in security context", ex);
         }
+        filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
@@ -89,12 +74,5 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
-    }
-
-    private void sendErrorResponse(HttpServletResponse response, HttpStatus status, String message) throws IOException {
-        ResponseObject<Object> errorResponse = ResponseObject.errorForward(message, status);
-        response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getWriter(), errorResponse);
     }
 }
