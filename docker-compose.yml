@@ -1,43 +1,48 @@
 version: '3.8'
 
 services:
-  # MySQL service
+  # Dịch vụ MySQL
   mysql:
-    image: mysql:latest
-    container_name: mysql-container
+    image: mysql:latest  # Sử dụng image MySQL mới nhất
+    container_name: mysql-container  # Tên container là mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: user_management_db
+      MYSQL_ROOT_PASSWORD: 123456  # Mật khẩu cho người dùng root trong MySQL
+      MYSQL_DATABASE: user_management_db  # Tên cơ sở dữ liệu mặc định
     ports:
-      - "3307:3306"
+      - "3307:3306"  # Mở cổng 3307 trên máy chủ và ánh xạ nó tới cổng 3306 trong container MySQL
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql  # Chia sẻ thư mục mysql-data từ máy chủ tới container để lưu trữ dữ liệu
 
-  # Backend service (Spring Boot)
+  # Dịch vụ Backend (Spring Boot)
   springboot-app:
-    image: my_backend_image:tag-v1
-    container_name: springboot-container
+    image: my_backend_image:tag-v1  # Sử dụng Docker image đã tạo từ ứng dụng Spring Boot
+    container_name: springboot-container  # Tên container
     environment:
-      # Database Configuration
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: user_management_db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 123456
+      # Cấu hình kết nối cơ sở dữ liệu MySQL
+      MYSQL_HOST: mysql  # Tên dịch vụ MySQL, sẽ được Docker tự động giải quyết là địa chỉ IP container MySQL
+      MYSQL_PORT: 3306  # Cổng MySQL trong container
+      MYSQL_DATABASE: user_management_db  # Cơ sở dữ liệu mà ứng dụng sẽ kết nối
+      MYSQL_USER: root  # Tên người dùng MySQL
+      MYSQL_PASSWORD: 123456  # Mật khẩu người dùng MySQL
 
-      # Server Configuration
-      SERVER_PORT: 9999
-      SERVER_VERSION: 1.0.0
-      ALLOWED_ORIGIN: "http://localhost:6789"
+      # Cấu hình máy chủ
+      SERVER_PORT: 9999  # Cổng mà Spring Boot sẽ lắng nghe
+      SERVER_VERSION: 1.0.0  # Phiên bản của ứng dụng
 
-      # JPA Configuration
-      JPA_DDL_AUTO: "update"
-      JPA_SHOW_SQL: "true"
+      # Cấu hình JPA (Java Persistence API)
+      JPA_DDL_AUTO: "create"  # Tạo các bảng khi khởi động ứng
+      JPA_SHOW_SQL: "true"  # Hiển thị SQL được sinh ra trong quá trình tương tác với cơ sở dữ liệu
 
-      # Security Configuration
-      JWT_SECRET: "dGV5cjgzNWlsNWhjYXl1d2hsYXpkaGZ5dmxhd3NkbXlrZmdhbW84cThyNmhxOG01c2RscGQ3M2VrdG1uYnFnZWtybjVwYzEzNGs4Zjc5dmlqbGJrYjh2OHdyYnEyc3BsOWUxbnkwbzh4dmtjano1dmpjYWFxM3UybGFrcWg5czM="
+      # Cấu hình bảo mật JWT
+      JWT_SECRET: "dGV5cjgzNWlsNWhjYXl1d2hsYXpkaGZ5dmxhd3NkbXlrZmdhbW84cThyNmhxOG01c2RscGQ3M2VrdG1uYnFnZWtybjVwYzEzNGs4Zjc5dmlqbGJrYjh2OHdyYnEyc3BsOWUxbnkwbzh4dmtjano1dmpjYWFxM3UybGFrcWg5czM="  # Mã hóa JWT secret key
+
+      # Thông tin người dùng mặc định
+      USER_DEFAULT_NAME: "Nguyễn Hoàng Dược"  # Tên người dùng mặc định
+      USER_DEFAULT_EMAIL: "admin@gmail.com"  # Email người dùng mặc định
+      USER_DEFAULT_PASSWORD: "12345678"  # Mật khẩu người dùng mặc định
+      USER_DEFAULT_ROLES: "USER,ADMIN"  # Vai trò mặc định của người dùng, có thể thay đổi theo nhu cầu có 2 role là (ADMIN và USER)
 
     ports:
-      - "9999:9999"
+      - "9999:9999"  # Ánh xạ cổng 9999 từ container sang máy chủ, để người dùng có thể truy cập ứng dụng tại cổng 9999
     depends_on:
-      - mysql
+      - mysql  # Dịch vụ springboot-app sẽ chỉ được khởi động sau khi MySQL đã sẵn sàng

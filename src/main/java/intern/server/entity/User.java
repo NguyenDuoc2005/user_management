@@ -27,7 +27,7 @@ public class User extends PrimaryEntity implements Serializable {
     private String passWord;
 
     @Size(max = EntityProperties.LENGTH_NAME)
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Size(max = EntityProperties.LENGTH_NAME)

@@ -40,8 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Value("${frontend.url}")
-    private String allowedOrigin;
+
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -63,24 +62,9 @@ public class SecurityConfig {
         provider.setUserDetailsService(userDetailsService);
         return new ProviderManager(provider);
     }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        source.registerCorsConfiguration("/**", config.applyPermitDefaultValues());
-        config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "*"));
-        config.setAllowedOrigins(Collections.singletonList(allowedOrigin));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT", "OPTIONS", "PATCH", "DELETE"));
-        config.setAllowCredentials(true);
-        config.setExposedHeaders(List.of("Authorization"));
-        return source;
-    }
-
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
-        http.cors(c -> c.configurationSource(corsConfigurationSource()));
         http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
